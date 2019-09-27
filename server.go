@@ -2,14 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/viveksyngh/search-api/db"
 )
 
+//CreateNewServer create and return a new server instance
 func CreateNewServer() (*Server, error) {
 	db, err := db.Connection()
 	if err != nil {
@@ -22,6 +20,7 @@ func CreateNewServer() (*Server, error) {
 	}, nil
 }
 
+//Start start the HTTP Server
 func (s *Server) Start() {
 	http.ListenAndServe(":8000", s.Router)
 }
@@ -39,28 +38,4 @@ type SearchQuery struct {
 
 func (s *Server) routes() {
 	s.Router.HandleFunc("/search", s.handleSearchQuery())
-}
-
-func (s *Server) handleSearchQuery() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var searchQuery SearchQuery
-
-		if r.Method == http.MethodPost {
-			body, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-				http.Error(w, "can not read body", http.StatusBadRequest)
-				return
-			}
-
-			err = json.Unmarshal(body, &searchQuery)
-			if err != nil {
-				http.Error(w, "malformed request body", http.StatusBadRequest)
-				return
-			}
-			fmt.Println(searchQuery.Query)
-
-		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-		}
-	}
 }
