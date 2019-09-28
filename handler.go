@@ -106,3 +106,128 @@ func (s *Server) handleRecentQueries() http.HandlerFunc {
 		}
 	}
 }
+
+func (s *Server) handleSearchResult() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var searchResult SearchResult
+		queryParam, ok := r.URL.Query()["queryId"]
+		if !ok || len(queryParam[0]) < 1 {
+			http.Error(w, "query paramater queryId is missing", http.StatusBadRequest)
+
+		}
+		queryID := queryParam[0]
+
+		var (
+			id        int
+			status    string
+			query     string
+			createdOn time.Time
+			title     string
+			url       string
+			text      string
+		)
+
+		if r.Method == http.MethodGet {
+			rows, err := s.DB.Query(`SELECT id, status, query, created_on FROM searchquery WHERE id = $1`, queryID)
+			defer rows.Close()
+
+			if err != nil {
+				http.Error(w, "Something went wrong", http.StatusInternalServerError)
+				return
+			}
+
+			if rows.Next() {
+				if err = rows.Scan(&id, &status, &query, &createdOn); err != nil {
+					http.Error(w, "Something went wrong", http.StatusInternalServerError)
+					return
+				}
+
+				searchResult = SearchResult{
+					ID:        id,
+					Status:    status,
+					Query:     query,
+					CreatedOn: createdOn,
+				}
+
+			} else {
+				http.Error(w, "query with given queryId not found", http.StatusNotFound)
+				return
+			}
+
+			rows, err = s.DB.Query(`SELECT id, title, url FROM googlesearchresult WHERE  searchquery_id = $1`, queryID)
+			if err != nil {
+				http.Error(w, "Something went wrong "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			var googleResults []Result
+			for rows.Next() {
+				if err = rows.Scan(&id, &title, &url); err != nil {
+					http.Error(w, "Something went wrong "+err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				result := Result{
+					ID:    id,
+					Title: title,
+					URL:   url,
+				}
+				googleResults = append(googleResults, result)
+			}
+			searchResult.Google = googleResults
+
+			var duckduckResults []Result
+			rows, err = s.DB.Query(`SELECT id, title, url FROM duckduckgosearchresult WHERE  searchquery_id = $1`, queryID)
+			if err != nil {
+				http.Error(w, "Something went wrong "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+			for rows.Next() {
+				if err = rows.Scan(&id, &title, &url); err != nil {
+					http.Error(w, "Something went wrong : "+err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				result := Result{
+					ID:    id,
+					Title: title,
+					URL:   url,
+				}
+				duckduckResults = append(duckduckResults, result)
+			}
+			searchResult.DuckDuckGo = duckduckResults
+
+			var wikipediaResult WikipediaResult
+			rows, err = s.DB.Query(`SELECT id, result FROM wikipediasearchresult WHERE  searchquery_id = $1`, queryID)
+			if err != nil {
+				http.Error(w, "Something went wrong: "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if rows.Next() {
+				if err = rows.Scan(&id, &text); err != nil {
+					http.Error(w, "Something went wrong "+err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				wikipediaResult = WikipediaResult{
+					ID:   id,
+					Text: text,
+				}
+
+			}
+			searchResult.Wikipedia = wikipediaResult
+
+			jsonData, err := json.Marshal(searchResult)
+			if err != nil {
+				http.Error(w, "Something went wrong "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(jsonData)
+
+		} else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	}
+}

@@ -48,4 +48,5 @@ type Server struct {
 func (s *Server) routes() {
 	s.Router.HandleFunc("/search", s.handleSearchQuery())
 	s.Router.HandleFunc("/recent", s.handleRecentQueries())
+	s.Router.HandleFunc("/search-result", s.handleSearchResult())
 }
