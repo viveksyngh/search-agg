@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/streadway/amqp"
+	"github.com/viveksyngh/search-api/db"
 )
 
 func failOnError(err error, msg string) {
@@ -60,6 +62,11 @@ func main() {
 	)
 	failOnError(err, "Failed to publish message")
 
+	dbConn, err := db.Connection()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	forever := make(chan bool)
 	go func() {
 		for d := range messages {
@@ -69,7 +76,7 @@ func main() {
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
-				search(searchQuery)
+				search(dbConn, searchQuery)
 				log.Printf("Done!")
 			}
 			d.Ack(false)
@@ -82,7 +89,7 @@ func main() {
 
 type SearchResult struct {
 	Title string
-	Link  string
+	URL   string
 }
 
 type SearchQuery struct {
@@ -90,7 +97,7 @@ type SearchQuery struct {
 	Query string `json:"query"`
 }
 
-func search(searchQuery SearchQuery) {
+func search(db *sql.DB, searchQuery SearchQuery) {
 
 	googleChan := make(chan []SearchResult)
 	duckduckgoChan := make(chan []SearchResult)
@@ -108,22 +115,48 @@ func search(searchQuery SearchQuery) {
 		wikipediaChan <- wikipediaSearch(searchQuery.Query)
 	}()
 
-	timeout := time.After(80 * time.Millisecond)
-
-	select {
-	case results := <-googleChan:
-		//Insert the results in the database
-		fmt.Println(results)
-	case results := <-duckduckgoChan:
-		//Insert the results in the database
-		fmt.Println(results)
-	case wikipediaResult := <-wikipediaChan:
-		//Insert the result in the database
-		fmt.Println(wikipediaResult)
-	case <-timeout:
-		fmt.Println("Search Timed Out")
-		return
+	timeout := time.After(500 * time.Millisecond)
+	for i := 0; i < 3; i++ {
+		select {
+		case results := <-googleChan:
+			//Insert the results in the database
+			fmt.Println(results)
+			for _, result := range results {
+				_, err := db.Exec(`INSERT INTO googlesearchresult (title, searchquery_id, url) VALUES ($1, $2, $3)`,
+					result.Title, searchQuery.ID, result.URL)
+				if err != nil {
+					fmt.Println("Failed to insert value: ", err.Error())
+				}
+			}
+		case results := <-duckduckgoChan:
+			//Insert the results in the database
+			fmt.Println(results)
+			for _, result := range results {
+				_, err := db.Exec(`INSERT INTO duckduckgosearchresult (title, searchquery_id, url) VALUES ($1, $2, $3)`,
+					result.Title, searchQuery.ID, result.URL)
+				if err != nil {
+					fmt.Println("Failed to insert value: ", err.Error())
+				}
+			}
+		case wikipediaResult := <-wikipediaChan:
+			//Insert the result in the database
+			fmt.Println(wikipediaResult)
+			_, err := db.Exec(`INSERT INTO wikipediasearchresult (result, searchquery_id) VALUES ($1, $2)`,
+				wikipediaResult, searchQuery.ID)
+			if err != nil {
+				fmt.Println("Failed to insert value: ", err.Error())
+			}
+		case <-timeout:
+			fmt.Println("Search Timed Out")
+			return
+		}
 	}
+
+	_, err := db.Exec(`UPDATE searchquery SET status = $1 WHERE id = $2`, "Completed", searchQuery.ID)
+	if err != nil {
+		fmt.Println("Failed to update the status: ", err.Error())
+	}
+	return
 
 }
 
@@ -132,7 +165,7 @@ func duckDuckGoSearch(query string) []SearchResult {
 	return []SearchResult{
 		{
 			Title: "Test",
-			Link:  "www.duckduckgo.com",
+			URL:   "www.duckduckgo.com",
 		},
 	}
 }
@@ -142,7 +175,7 @@ func googleSearch(query string) []SearchResult {
 	return []SearchResult{
 		{
 			Title: "Test Search Result",
-			Link:  "www.google.com",
+			URL:   "www.google.com",
 		},
 	}
 }

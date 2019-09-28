@@ -8,3 +8,23 @@ CREATE TABLE searchquery (
   query           VARCHAR(255) NOT NULL,
   created_on      TIMESTAMP NOT NULL 
 );
+
+CREATE TABLE googlesearchresult (
+    id              SERIAL PRIMARY KEY,
+    title           VARCHAR (255) NOT NULL,
+    searchquery_id  INTEGER REFERENCES searchquery(id),
+    url             VARCHAR (255) NOT NULL         
+);
+
+CREATE TABLE duckduckgosearchresult (
+    id              SERIAL PRIMARY KEY,
+    title           VARCHAR (255) NOT NULL,
+    searchquery_id  INTEGER REFERENCES searchquery(id),
+    url             VARCHAR (255) NOT NULL            
+);
+
+CREATE TABLE wikipediasearchresult (
+    id              SERIAL PRIMARY KEY,
+    result           TEXT NOT NULL,
+    searchquery_id  INTEGER REFERENCES searchquery(id)        
+);
