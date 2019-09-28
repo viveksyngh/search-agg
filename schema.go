@@ -37,6 +37,6 @@ type SearchResult struct {
 	Query      string          `json:"query"`
 	CreatedOn  time.Time       `json:"created_on"`
 	Google     []Result        `json:"google"`
-	DuckDuckGo []Result        `json:"duckduckgo`
+	DuckDuckGo []Result        `json:"duckduckgo"`
 	Wikipedia  WikipediaResult `json:"wikipedia"`
 }
