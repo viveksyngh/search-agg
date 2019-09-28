@@ -9,3 +9,8 @@ type SearchItem struct {
 	Query     string    `json:"query"`
 	CreatedOn time.Time `json:"created_on"`
 }
+
+type QueryMessage struct {
+	ID    int64  `json:"id"`
+	Query string `json:"query"`
+}

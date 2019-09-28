@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/viveksyngh/search-api/rabbitmq"
 )
 
 const (
@@ -30,13 +32,23 @@ func (s *Server) handleSearchQuery() http.HandlerFunc {
 				return
 			}
 
-			_, err = s.DB.Exec(`INSERT INTO searchquery(status, query, created_on) VALUES ($1, $2, $3)`,
-				InProgressStatus, searchQuery.Query, time.Now())
+			var lastInsertID int64
+			err = s.DB.QueryRow(`INSERT INTO searchquery(status, query, created_on) VALUES ($1, $2, $3) RETURNING id`,
+				InProgressStatus, searchQuery.Query, time.Now()).Scan(&lastInsertID)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				fmt.Fprintf(w, err.Error())
 				return
 			}
+
+			queryMessage := QueryMessage{ID: lastInsertID, Query: searchQuery.Query}
+			messageBytes, err := json.Marshal(queryMessage)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				fmt.Fprintf(w, err.Error())
+				return
+			}
+			rabbitmq.PublishMessage(s.Queue, QueueName, messageBytes)
 
 			w.WriteHeader(http.StatusAccepted)
 			fmt.Fprintf(w, "Search query submitted.")
