@@ -20,8 +20,8 @@ func GetEnv(name string, value string) string {
 
 //Connection creates and returns database connection
 func Connection() (*sql.DB, error) {
-	dbUser := GetEnv("DB_USER", "viveks")
-	dbPassword := GetEnv("DB_PASSWORD", "")
+	dbUser := GetEnv("DB_USER", "searchdbuser")
+	dbPassword := GetEnv("DB_PASSWORD", "12345")
 	dbPort := GetEnv("DB_PORT", "5432")
 	dbName := GetEnv("DB_NAME", "searchdb")
 	dbHost := GetEnv("DB_HOST", "localhost")

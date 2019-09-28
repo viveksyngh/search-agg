@@ -5,6 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
+)
+
+const (
+	InProgressStatus = "In Progress"
 )
 
 func (s *Server) handleSearchQuery() http.HandlerFunc {
@@ -23,7 +28,17 @@ func (s *Server) handleSearchQuery() http.HandlerFunc {
 				http.Error(w, "malformed request body", http.StatusBadRequest)
 				return
 			}
-			fmt.Println(searchQuery.Query)
+
+			_, err = s.DB.Exec(`INSERT INTO searchquery(status, query, created_on) VALUES ($1, $2, $3)`,
+				InProgressStatus, searchQuery.Query, time.Now())
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				fmt.Fprintf(w, err.Error())
+				return
+			}
+
+			w.WriteHeader(http.StatusAccepted)
+			fmt.Fprintf(w, "Search query submitted.")
 
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
