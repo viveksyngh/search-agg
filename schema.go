@@ -14,3 +14,8 @@ type QueryMessage struct {
 	ID    int64  `json:"id"`
 	Query string `json:"query"`
 }
+
+//SearchQuery search query struct
+type SearchQuery struct {
+	Query string `json:"query"`
+}

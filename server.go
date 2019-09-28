@@ -45,11 +45,6 @@ type Server struct {
 	Queue  *amqp.Connection
 }
 
-//SearchQuery search query struct
-type SearchQuery struct {
-	Query string `json:"query"`
-}
-
 func (s *Server) routes() {
 	s.Router.HandleFunc("/search", s.handleSearchQuery())
 	s.Router.HandleFunc("/recent", s.handleRecentQueries())
