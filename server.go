@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	//QueueName queue name for the tasks
 	QueueName = "task_queue"
 )
 
