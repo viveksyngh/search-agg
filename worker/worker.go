@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/streadway/amqp"
-	"github.com/viveksyngh/search-api/db"
+	"github.com/viveksyngh/search-agg/db"
 )
 
 func failOnError(err error, msg string) {
@@ -171,13 +171,19 @@ func duckDuckGoSearch(query string) []SearchResult {
 }
 
 func googleSearch(query string) []SearchResult {
-	time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
-	return []SearchResult{
-		{
-			Title: "Test Search Result",
-			URL:   "www.google.com",
-		},
+	var results []SearchResult
+	googleResults, err := GoogleScrape(query, "com", "en")
+	if err != nil {
+		fmt.Println("Can not get results from google: ", err.Error())
+		return results
 	}
+
+	for _, googleResult := range googleResults {
+		results = append(results, SearchResult{
+			Title: googleResult.ResultTitle,
+			URL:   googleResult.ResultURL})
+	}
+	return results
 }
 
 func wikipediaSearch(query string) string {
