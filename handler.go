@@ -18,8 +18,8 @@ const (
 //handleSearchQuery returns handler to handler search query request
 func (s *Server) handleSearchQuery() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var searchQuery SearchQuery
 
+		var searchQuery SearchQuery
 		if r.Method == http.MethodPost {
 			body, err := ioutil.ReadAll(r.Body)
 			if err != nil {
@@ -61,6 +61,7 @@ func (s *Server) handleSearchQuery() http.HandlerFunc {
 }
 
 func (s *Server) handleRecentQueries() http.HandlerFunc {
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		var searchItems []SearchItem
 		var (

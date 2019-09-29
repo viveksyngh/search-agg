@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 
+	"github.com/rs/cors"
 	"github.com/streadway/amqp"
 	"github.com/viveksyngh/search-api/db"
 	"github.com/viveksyngh/search-api/rabbitmq"
@@ -36,7 +37,8 @@ func CreateNewServer() (*Server, error) {
 func (s *Server) Start() {
 	defer s.DB.Close()
 	defer s.Queue.Close()
-	http.ListenAndServe(":8000", s.Router)
+	handler := cors.Default().Handler(s.Router)
+	http.ListenAndServe(":8000", handler)
 }
 
 //Server application server struct
