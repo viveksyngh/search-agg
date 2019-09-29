@@ -1,0 +1,35 @@
+<div class="container">
+    <br />
+    <br />
+    <div ng-show="!result">
+        <h4 class="text-center">Query not found</h4>
+    </div>
+
+    <div>
+        <h3> Search Result for : {{result.query}}</h3>
+    </div>
+
+    <table class="table" ng-show="recentQueries.length != 0">
+        <thead>
+            <tr class="table-primary">
+                <th>Google</th>
+                <th>DuckDuckGo</th>
+                <th>Wikipedia</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span ng-repeat="item in result.google"><a href="{{item.url}}">{{item.title}}</a></span>
+                </td>
+                <td>
+                    <span ng-repeat="item in result.duckduckgo"><a href="{{item.url}}">{{item.title}}</a></span>
+                </td>
+                <td>
+                    <p>{{result.wikipedia.text}}</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!--container -->

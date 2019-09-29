@@ -1,0 +1,15 @@
+<div class="container">
+	<form name="searchInput" ng-submit="searchInput.$valid && mainCtrl.submitForm()" novalidate>
+		<div class="form-group">
+			<div class="active-cyan-3 active-cyan-4 mb-4" id="search-box">
+				<input class="form-control" ng-model="searchText" type="text" id="searchText" placeholder="Search"
+					ng-minlength="3" ng-maxlength="255" required="required" aria-label="Search">
+			</div>
+			<div class="form-group last">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="submit" style="position: absolute; left: -9999px"
+						class="btn btn-primary">Submit</button>
+				</div>
+			</div>
+	</form>
+</div>

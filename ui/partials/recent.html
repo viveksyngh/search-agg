@@ -1,0 +1,34 @@
+<div class="container">
+    <br />
+    <br />
+    <div ng-show="recentQueries.length === 0">
+        <h4 class="text-center">No Recent queries</h4>
+    </div>
+
+    <table class="table" ng-show="recentQueries.length != 0">
+        <thead>
+            <tr class="table-primary">
+                <th>Query</th>
+                <th>Status</th>
+                <th>Created On</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="query in recentQueries" class="table-primary">
+
+                <td ng-if="query.status === 'Completed'">
+                    <a href="#/search-result?queryId={{query.id}}">{{query.query}}
+                    </a>
+                </td>
+                <td ng-if="query.status === 'In Progress'">
+                    {{query.query}}
+                </td>
+
+                <!-- <td ng-if="query.status != 'Completed'">{{query.query}}</td> -->
+                <td>{{query.status}}</td>
+                <td>{{query.created_on}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!--container -->
