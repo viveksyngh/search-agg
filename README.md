@@ -1,22 +1,27 @@
 # search-Aggregator
-Application written in go which aggregates search results from Google, DuckDuckGo and Wikipedia
+Application written in golang which aggregates search results from Google, DuckDuckGo and Wikipedia
 
 ## Steps to run
 
 ### Prerequisite
 You need to have `docker` and `docker-compose` installed on your system
-    1. [Installation on Mac](!https://docs.docker.com/docker-for-mac/install/)
-    2. [Install Docker Compose ](!https://docs.docker.com/compose/install/) 
 
-### Clone this Repository and Change to repository directory
+1. [Installation on Mac](https://docs.docker.com/docker-for-mac/install/)
+    
+2. [Install Docker Compose ](https://docs.docker.com/compose/install/) 
 
-### Run below command to bring up all services
+
+### Get the code
+Clone this repository and change to repository directory
+
+### Bring up all Services
+Run below command to bring up all services
 ```
 docker-compose build --parallel && docker-compose up
 ```
 
-### Setup database
-Once all services are up, open a terminal and run below command to exec to database container
+### Setup Database
+Once all services are up, open a terminal window and run below command to exec to database container
 ```
 docker exec -it $(docker ps --filter=name=search-agg_db -q) bash
 ```
