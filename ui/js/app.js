@@ -56,37 +56,30 @@ app.controller("mainController", function ($scope, $http, $location) {
   }
 });
 
-app.controller("recentController", function ($scope, $http) {
+app.controller("recentController", function ($scope, $http, $interval) {
   $scope.recentQueries = [];
   // this.submitForm = function () {
   // console.log($scope.searchText);
   console.log("Hello");
-  $http({
-    method: 'GET',
-    data: {},
-    url: BASE_URL + 'recent',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  }).then(function successCallback(response) {
-      console.log(response.data);
-      $scope.recentQueries = response.data;
-    },
-    function errorCallback(response) {
-      console.log("Error");
-      console.log(response);
-    });
-  // }
-
-  this.getRowClass = function (status) {
-    if (status === 'Completed') {
-      return "table-success";
-    } else if (status === 'Failed') {
-      return "table-danger";
-    } else {
-      return "table-primary";
-    }
+  var getRecentData = function () {
+    $http({
+      method: 'GET',
+      data: {},
+      url: BASE_URL + 'recent',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(function successCallback(response) {
+        console.log(response.data);
+        $scope.recentQueries = response.data;
+      },
+      function errorCallback(response) {
+        console.log("Error");
+        console.log(response);
+      });
   };
+  getRecentData();
+  $interval(getRecentData, 60000);
 });
 
 app.controller("resultController", function ($scope, $http, $location) {
