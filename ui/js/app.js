@@ -1,6 +1,6 @@
 'use strict';
 var app = angular.module('hotel_app', ['ngRoute']);
-var BASE_URL = "http://127.0.0.1:8000/";
+var BASE_URL = "http://127.0.0.1:8001/";
 
 // Route providers
 app.config(function ($routeProvider) {

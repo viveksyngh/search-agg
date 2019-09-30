@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
-
-	"github.com/viveksyngh/search-api/rabbitmq"
 )
 
 const (
@@ -49,7 +47,7 @@ func (s *Server) handleSearchQuery() http.HandlerFunc {
 				fmt.Fprintf(w, err.Error())
 				return
 			}
-			rabbitmq.PublishMessage(s.Queue, QueueName, messageBytes)
+			PublishMessage(s.Queue, QueueName, messageBytes)
 
 			w.WriteHeader(http.StatusAccepted)
 			fmt.Fprintf(w, "Search query submitted.")

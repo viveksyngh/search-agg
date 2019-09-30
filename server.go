@@ -6,8 +6,7 @@ import (
 
 	"github.com/rs/cors"
 	"github.com/streadway/amqp"
-	"github.com/viveksyngh/search-api/db"
-	"github.com/viveksyngh/search-api/rabbitmq"
+	"github.com/viveksyngh/search-agg/db"
 )
 
 const (
@@ -22,7 +21,7 @@ func CreateNewServer() (*Server, error) {
 		return &Server{}, err
 	}
 
-	queue, err := rabbitmq.Connection(QueueName)
+	queue, err := Connection(QueueName)
 	if err != nil {
 		return &Server{}, err
 	}
@@ -38,7 +37,7 @@ func (s *Server) Start() {
 	defer s.DB.Close()
 	defer s.Queue.Close()
 	handler := cors.Default().Handler(s.Router)
-	http.ListenAndServe(":8000", handler)
+	http.ListenAndServe("0.0.0.0:8000", handler)
 }
 
 //Server application server struct

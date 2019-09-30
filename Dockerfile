@@ -3,7 +3,7 @@ FROM golang:1.11 as builder
 
 WORKDIR /usr/bin/
 
-WORKDIR /go/src/search-api
+WORKDIR /go/src/github.com/viveksyngh/search-agg
 COPY . .
 
 # Run a gofmt and exclude all vendored code.
@@ -17,11 +17,13 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
 # Release stage
 FROM alpine:3.8
 
+RUN apk --no-cache add ca-certificates
+
 EXPOSE 8000
 
 WORKDIR /root/
 
-COPY --from=builder /go/src/search-api/search-api   .
+COPY --from=builder /go/src/github.com/viveksyngh/search-agg/search-api   .
 
 ENV PATH=$PATH:/root/
 
