@@ -14,7 +14,8 @@ You need to have `docker` and `docker-compose` installed on your system
 ### Get the code
 Clone this repository and change to repository directory
 
-### Run below command to bring up all services
+### Bring up all services
+Run below commadn to bring up all the services
 ```
 docker-compose build --parallel && docker-compose up
 ```
