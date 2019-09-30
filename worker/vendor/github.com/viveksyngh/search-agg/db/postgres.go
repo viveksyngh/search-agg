@@ -24,7 +24,7 @@ func Connection() (*sql.DB, error) {
 	dbPassword := GetEnv("DB_PASSWORD", "12345")
 	dbPort := GetEnv("DB_PORT", "5432")
 	dbName := GetEnv("DB_NAME", "searchdb")
-	dbHost := GetEnv("DB_HOST", "localhost")
+	dbHost := GetEnv("DB_HOST", "db")
 
 	var connectionString = "sslmode=disable host=%s port=%s user=%s " +
 		"dbname=%s password=%s"

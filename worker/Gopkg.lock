@@ -39,11 +39,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4633ecc72485e67cb3fb5e7d52287c478a09e9961137f5c618d693984d6e2ee9"
+  digest = "1:30ca936a9665452722355ab5e71a1d7ca70856e5c91240049ad39e6b8313e2a6"
   name = "github.com/viveksyngh/search-agg"
   packages = ["db"]
   pruneopts = "UT"
-  revision = "18aff99a1693d18182eaa3ee24ef2e110c3a45df"
+  revision = "0659f885e875e82f78ebd89c622d154b29b3a988"
 
 [[projects]]
   branch = "master"

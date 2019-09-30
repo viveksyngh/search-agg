@@ -17,6 +17,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
 # Release stage
 FROM alpine:3.8
 
+RUN apk --no-cache add ca-certificates
+
 WORKDIR /root/
 
 COPY --from=builder /go/src/search-worker/search-worker   .
