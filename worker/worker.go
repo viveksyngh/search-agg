@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"math/rand"
 	"time"
 
 	"github.com/streadway/amqp"
@@ -205,6 +204,6 @@ func googleSearch(query string) []SearchResult {
 }
 
 func wikipediaSearch(query string) string {
-	time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
-	return "Random test search result"
+	result := getWikipediaResult(query)
+	return result
 }

@@ -14,3 +14,10 @@ func Test_duckduckgoSearch(t *testing.T) {
 		fmt.Println(googleResults)
 	}
 }
+
+func Test_wikipediaSearch(t *testing.T) {
+	result := getWikipediaResult("golang")
+	if len(result) == 0 {
+		t.Fail()
+	}
+}
