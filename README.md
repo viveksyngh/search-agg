@@ -5,8 +5,9 @@ Application written in go which aggregates search results from Google, DuckDuckG
 
 ### Prerequisite
 You need to have `docker` and `docker-compose` installed on your system
-    1. [Installation on Mac](!https://docs.docker.com/docker-for-mac/install/)
-    2. [Install Docker Compose ](!https://docs.docker.com/compose/install/) 
+    1. [Installation on Mac](https://docs.docker.com/docker-for-mac/install/)
+    
+    2. [Install Docker Compose ](https://docs.docker.com/compose/install/) 
 
 ### Clone this Repository and Change to repository directory
 
