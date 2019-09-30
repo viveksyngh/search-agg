@@ -20,10 +20,10 @@
         <tbody>
             <tr>
                 <td>
-                    <span ng-repeat="item in result.google"><a href="{{item.url}}">{{item.title}}</a></span>
+                    <li ng-repeat="item in result.google"><a href="{{item.url}}">{{item.title}}</a></li>
                 </td>
                 <td>
-                    <span ng-repeat="item in result.duckduckgo"><a href="{{item.url}}">{{item.title}}</a></span>
+                    <li ng-repeat="item in result.duckduckgo"><a href="{{item.url}}">{{item.title}}</a></li>
                 </td>
                 <td>
                     <p>{{result.wikipedia.text}}</p>
