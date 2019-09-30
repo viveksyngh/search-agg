@@ -11,7 +11,8 @@ You need to have `docker` and `docker-compose` installed on your system
 2. [Install Docker Compose ](https://docs.docker.com/compose/install/) 
 
 
-### Clone this Repository and Change to repository directory
+### Get the code
+Clone this repository and change to repository directory
 
 ### Run below command to bring up all services
 ```
