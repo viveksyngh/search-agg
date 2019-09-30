@@ -59,4 +59,4 @@ CREATE TABLE wikipediasearchresult (
 
 ### Open the application
 
-Go to browser and access the application at `http:\\127.0.0.1:8000`
+Go to browser and access the application at `http://127.0.0.1:8000`
