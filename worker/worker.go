@@ -161,13 +161,14 @@ func search(db *sql.DB, searchQuery SearchQuery) {
 }
 
 func duckDuckGoSearch(query string) []SearchResult {
-	time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
-	return []SearchResult{
-		{
-			Title: "Test",
-			URL:   "www.duckduckgo.com",
-		},
+	// time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
+	results := []SearchResult{}
+	results, err := duckduckgoSearch(query)
+	if err != nil {
+		fmt.Println("Can not get results from google: ", err.Error())
+		return results
 	}
+	return results
 }
 
 func googleSearch(query string) []SearchResult {
