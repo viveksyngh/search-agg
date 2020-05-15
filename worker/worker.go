@@ -48,7 +48,7 @@ func main() {
 		0,     //Prefetch size
 		false, //globale
 	)
-	failOnError(err, "Failed to set prefetch couny")
+	failOnError(err, "Failed to set prefetch count")
 
 	messages, err := ch.Consume(
 		queue.Name, // queue
@@ -59,7 +59,7 @@ func main() {
 		false,      // no-wait
 		nil,        // args
 	)
-	failOnError(err, "Failed to publish message")
+	failOnError(err, "Failed to consume message")
 
 	dbConn, err := db.Connection()
 	if err != nil {
@@ -158,6 +158,10 @@ func search(db *sql.DB, searchQuery SearchQuery) {
 			}
 		case <-timeout:
 			fmt.Println("Search Timed Out")
+			_, err := db.Exec(`UPDATE searchquery SET status = $1 WHERE id = $2`, "Timed Out", searchQuery.ID)
+			if err != nil {
+				fmt.Println("Failed to update the status: ", err.Error())
+			}
 			return
 		}
 	}

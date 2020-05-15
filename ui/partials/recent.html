@@ -20,7 +20,7 @@
                     <a href="#/search-result?queryId={{query.id}}">{{query.query}}
                     </a>
                 </td>
-                <td ng-if="query.status === 'In Progress'">
+                <td ng-if="query.status === 'In Progress' || query.status === 'Timed Out'">
                     {{query.query}}
                 </td>
 

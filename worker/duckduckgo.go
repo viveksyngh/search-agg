@@ -29,9 +29,8 @@ func duckduckGo(keyword string) (*http.Response, error) {
 
 	if err != nil {
 		return nil, err
-	} else {
-		return res, nil
 	}
+	return res, nil
 }
 
 func duckduckgoResultParser(response *http.Response) ([]SearchResult, error) {
